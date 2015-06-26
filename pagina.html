@@ -1,0 +1,82 @@
+<html>
+	<head>
+		
+		<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="Box2dWeb-2.1.a.3.min.js"></script>
+		<script type="text/javascript">
+			$("document").ready(iniciar);
+			function iniciar(){
+				var cuerpo ;
+				var suelo;
+				var mundo = new Box2D.Dynamics.b2World(new Box2D.Common.Math.b2Vec2(0,10),true);
+				var bodyDef = new  Box2D.Dynamics.b2BodyDef;
+				var fixDef = new Box2D.Dynamics.b2FixtureDef;
+				fixDef.restitution = 0.2;
+				fixDef.density = 1;
+				fixDef.friction = 0.5;	
+				
+				//piso				
+				bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+				bodyDef.position.x = pixelMetro(13);
+				bodyDef.position.y = pixelMetro(18) ;	
+				fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+				fixDef.shape.SetAsBox(14,0.3);
+				suelo = mundo.CreateBody(bodyDef);
+				suelo.CreateFixture(fixDef);	
+	
+
+				fixDef.restitution = 0.6;
+				fixDef.density = 2;
+				fixDef.friction = 1;	
+
+				bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+				bodyDef.position.x = pixelMetro(13);
+				bodyDef.position.y = pixelMetro(1) ;	
+				fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape;
+				fixDef.shape.SetRadius(1);
+				cuerpo = mundo.CreateBody(bodyDef);
+				cuerpo.CreateFixture(fixDef);	
+	
+				
+				bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+				bodyDef.position.x = pixelMetro(12);
+				bodyDef.position.y = pixelMetro(3) ;	
+				fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape;
+				fixDef.shape.SetRadius(0.5);
+				mundo.CreateBody(bodyDef).CreateFixture(fixDef);	
+				
+				
+				var $debug = new Box2D.Dynamics.b2DebugDraw();
+				$debug.SetSprite(document.getElementById("c").getContext("2d"));
+				$debug.SetDrawScale(30.0);
+				$debug.SetFillAlpha(0.3);
+				$debug.SetLineThickness(1.0);
+				$debug.SetFlags(Box2D.Dynamics.b2DebugDraw.e_shapeBit | Box2D.Dynamics.b2DebugDraw.e_jointBit);
+				mundo.SetDebugDraw($debug);
+				
+				
+				function actualizar(){
+					mundo.Step(1/60 , 10,10);
+					mundo.DrawDebugData();
+					mundo.ClearForces();	
+				}
+	
+				window.setInterval(actualizar , 1000/60);
+				
+			}
+		
+			
+			function pixelMetro(pixel){
+				return (pixel * 32 )/32;
+			}
+			function metroPixel(metro){
+				return (metro * 32 )*32;
+			}
+			
+		</script>
+	</head>
+	<body>
+		
+		<canvas id="c" width=800  height=600 style="background-color:black;"></canvas>
+	</body>
+</html>
